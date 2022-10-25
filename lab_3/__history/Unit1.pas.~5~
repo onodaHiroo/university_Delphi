@@ -1,0 +1,132 @@
+unit Unit1;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls;
+
+type
+  TForm1 = class(TForm)
+    Label1: TLabel;
+    Label2: TLabel;
+    Label3: TLabel;
+    Edit1: TEdit;
+    Edit2: TEdit;
+    Label4: TLabel;
+    Button1: TButton;
+    CheckBox1: TCheckBox;
+    Image1: TImage;
+    procedure Button1Click(Sender: TObject);
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+  var x0,y0: integer;
+  var x1,x2,x,y,mash,mash1: real;
+  begin
+    //чищу от предыдущего графика
+    Image1.Canvas.Pen.Color := clWhite;
+    Image1.Canvas.Rectangle(0,0,Width,Height);
+
+    //проверка условий на ввод x1 и x2
+    if (Edit1.Text = '') and (Edit2.Text = '') then
+    begin
+      label4.Caption := 'введите x1 и x2';
+      exit;
+    end
+    else;
+    if Edit1.Text = '' then
+    begin
+      label4.Caption := 'введите x1';
+      exit;
+    end;
+    if Edit2.Text = '' then
+    begin
+      label4.Caption := 'введите x2';
+      exit;
+    end
+    else;
+
+    label4.Caption := '';
+    x1 := StrToFloat (Edit1.Text);
+    x2 := StrToFloat (Edit2.Text);
+
+    if x1>x2 then
+    begin
+      label4.Caption := ('x(min) меньше x(max)');
+      exit
+    end;
+    if x2<x1 then
+    begin
+      label4.Caption := ('x(max) меньше x(min)');
+      exit
+    end;
+    if x2=x1 then
+    begin
+      label4.Caption := ('x(max) равен x(min)');
+      exit
+    end;
+
+    mash:= 20*(x2-x1)/(x2-x1);
+    //mash1 - динамический массив
+    mash1 := (0.5*(Image1.Width+Image1.Height))/(x2-x1);
+    with Image1 do
+    begin
+    x0 := Width div 2;
+    y0 := Height div 2;
+    with Canvas do
+      begin
+        //чищу оси
+        Pen.Color := clWhite;
+        Rectangle(0,0,Width,Height);
+        //рисую оси
+        Pen.Color := clBlack;
+        MoveTo(0,y0);
+        LineTo(width,y0);
+        MoveTo(x0,0);
+        LineTo(x0,height);
+
+        Pen.Color := clRed;
+        Pen.Width := 2;
+
+        x := x1;
+        y := 5 * sin (1/(x+2));
+        //провер€ю нужно ли использовать динамический массив
+        if checkbox1.checked then
+        begin
+          MoveTo(x0+Trunc(x*mash1),y0-Trunc(y*mash1));
+          while x < x2 do
+          begin
+            x := x + 0.001;
+            y := 5 * sin (1/(x+2));
+            LineTo(x0+Trunc(x*mash1),y0-Trunc(y*mash1));
+          end;
+        end
+        else
+        begin
+          MoveTo(x0+Trunc(x*mash),y0-Trunc(y*mash));
+          while x < x2 do
+          begin
+            x := x + 0.001;
+            y := 5 * sin (1/(x+2));
+            LineTo(x0+Trunc(x*mash),y0-Trunc(y*mash));
+          end;
+        end;
+      end;
+    end;
+  end;
+end;
+
+end.
