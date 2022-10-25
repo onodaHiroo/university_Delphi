@@ -1,0 +1,172 @@
+unit Unit2;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, System.Actions, Vcl.ActnList, Vcl.Menus,
+  Vcl.StdCtrls, Vcl.ExtCtrls;
+
+type
+  TForm2 = class(TForm)
+    Edit1: TEdit;
+    Button1: TButton;
+    RadioGroup1: TRadioGroup;
+    Label1: TLabel;
+    Edit2: TEdit;
+    Label2: TLabel;
+    procedure Button1Click(Sender: TObject);
+  private
+  function plus(s1,s2:string):boolean;
+  function minus(s1,s2:string):boolean;
+  function change(s1,s2:string):boolean;
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  Form2: TForm2;
+  len1,len2:integer;
+
+implementation
+
+{$R *.dfm}
+function TForm2.plus(s1,s2:string): Boolean;
+var i,j,k:integer;
+begin
+  if length(s1)+1 = length(s2) then
+  begin
+  k:=0;
+  j:=0;
+    if s1=s2 then
+      plus:=false;
+    if not (s1=s2) then
+      for i:=1 to length(s1) do
+        begin
+        j:=j+1;
+          if pos(s1[i],s2)=0 then
+          begin
+            plus:=false;
+            break;
+          end
+          else;
+          if (not(s1[i]=s2[j])) then //если отличается
+            begin
+              k:=k+1;
+              if k>1 then
+                break;
+              {if (s1[1]=s2[2]) and (not(k>1)) then //если не хватает первого
+                plus:=true
+                else
+                plus:=false;
+              if (s1[i]=s2[j]) and (not(j=(length(s2)))) and (not(k>1)) {and (s1[1]=s2[2])} {then //если не хватает внутри
+                {plus:=true
+                else
+                plus:=false;
+              if (k=1) and (not(s1[i]=s2[j])) and (not(s1[i]=s2[i])) then //если не хватает в конце
+                plus:=false;
+                break;
+              if (k>1) and (not(j=(length(s2)))) then //если больше 1 отличия
+                plus:=false;
+                break;}
+            end
+            else
+              plus:=true;
+        end;
+        if k>1 then
+          plus := false;
+  end
+  else
+    plus:= false;
+end;
+function TForm2.minus(s1: string; s2: string): Boolean;
+var i,j,k:integer;
+begin
+  if length(s1)-1 = length(s2) then
+  begin
+  k:=0;
+    if s1=s2 then
+      minus:=false;
+    if not (s1=s2) then
+      for i:=1 to length(s2) do
+        begin
+        j:=i;
+          if pos(s2[i],s1)=0 then
+          begin
+            minus:=false;
+            exit;
+          end
+          else;
+          if (not(s1[j]=s2[i])) then //если отличается
+            begin
+              k:=k+1;
+              j:=j+1;
+              if (j=length(s1)) and (s2[1]=s1[2]) and (not(k>1)) then //если лишний первый
+                minus:=true;
+              if (s1[j]=s2[i]) and (not(j=(length(s1)))) and (s2[1]=s1[2]) then //если лишний внутри
+                minus:=true;
+              if (k=1) and (not(s1[j]=s2[i])) and (not(s1[i]=s2[i])) then //если лишний в конце
+                minus:=false;
+              if (k>1) and (not(j=(length(s1)))) then //если больше 1 отличия
+                minus:=false;
+                break;
+            end
+            else
+            minus:=true;
+        end
+  end
+  else
+    minus:= false;
+end;
+function TForm2.change(s1: string; s2: string): Boolean;
+var i,j,k:integer;
+begin
+  if length(s1) = length(s2) then
+  begin
+  k:=0;
+    if s1=s2 then
+      change:=false;
+    if not (s1=s2) then
+    begin
+      for i:=1 to length(s1) do
+        begin
+          if (not(s1[i]=s2[i])) then
+            k:=k+1;
+        end;
+    end;
+    if k>1 then
+      change:=false
+      else
+      change:=true;
+  end
+  else
+    change:=false;
+end;
+
+procedure TForm2.Button1Click(Sender: TObject);
+var txt1, txt2, answer:string;
+i:integer;
+begin
+  txt1 := (edit1.Text);
+  txt2:= (edit2.Text);
+  if radiogroup1.itemindex = -1 then
+  label2.caption := 'выберите условие';
+    if radiogroup1.itemindex = 0 then
+      if plus(txt1,txt2)=true then
+        label2.Caption := 'да, можно'
+      else
+        label2.Caption := 'нет, нельзя';
+    if radiogroup1.itemindex = 1 then
+      if minus(txt1,txt2)=true then
+        label2.Caption := 'да, можно'
+      else
+        label2.Caption := 'нет, нельзя';
+    if radiogroup1.itemindex = 2 then
+      if change(txt1,txt2)=true then
+        label2.Caption := 'да, можно'
+      else
+        label2.Caption := 'нет, нельзя';
+end;
+
+end.
