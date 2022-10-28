@@ -1,2 +1,2 @@
-# git_Delphi
+# university_Delphi
 Public repository with university Delphi projects.
